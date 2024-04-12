@@ -11,7 +11,7 @@ x = 3
 count = 0
 life = 1
 
-def up_arrow(x, count):
+def up_arrow(x, count, life):
 	print("up!")
 	up = [
 b, b, b, w, w, b, b, b,
@@ -28,14 +28,15 @@ b, b, w, w, w, w, b, b]
 	up_var = sense.stick.wait_for_event()
 	e=time.time()
 	t=e-s
+	sense.clear
 	if push == "up" and t<x:
 		count = count + 1
 		x = x - 0.1
 	else:
-		life = 0
+		life = life - 1
 		print('you lose')
 		
-def push(x, count):
+def push(x, count, life):
 	print('push it!')
 	s=time.time()
 	push = sense.stick.wait_for_event()
@@ -45,34 +46,42 @@ def push(x, count):
 		count = count + 1
 		x = x - 0.1
 	else:
-		life = 0
+		life = life - 1
 		print('you lose')
 		
-def twist(x, count):
-	print('twist it!')
-	sw = sense.get_orientation_degrees()
-	s = sw['yaw']
-	time.sleep(3)
-	ew = sense.get_orientation_degrees()
-	e = ew['yaw']
-	if -45 < s-e < 45:
-		life = 0
-		print('you lose')
-	else:
-		count = count + 1
-		x = x - 0.1
+def twist(x, count, life):
+	s = 0
+	e = 0
+	print("twist it!")
+	while -45 < s-e < 45:
+		st = time.time()
+		sw = sense.get_orientation_degrees()
+		s = sw['yaw']
+		time.sleep(3)
+		ew = sense.get_orientation_degrees()
+		e = ew['yaw']
+		et = time.time()
+		t = et-st
+		if t >= 3:
+			life = life - 1
+			print('you lose')
+		elif e-s > 45 or e-s < - 45:
+			count = count + 1
+			x = x - 1
 
 
 
-
-while(life == 1):
+while(1):
+	if life == 0:
+		break
 	num = rn.randint(1,3)
 	if num == 1:
-		up_arrow(x, count)
+		up_arrow(x, count, life)
 	elif num == 2:
-		push(x, count)
+		push(x, count, life)
 	elif num == 3:
-		twist(x, count)
+		twist(x, count, life)
+
 print("game over. Final score: " + str(count))
 		
 
