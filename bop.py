@@ -93,5 +93,3 @@ while(1):
 
 #prints the player's final score.
 print("game over. Final score: " + str(count))
-		
-
